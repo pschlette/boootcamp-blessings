@@ -1,10 +1,13 @@
 {
   "name": "boootcamp-blessings",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "repository": "https://github.com/pschlette/boootcamp-blessings.git",
   "author": "Pete Schlette <pete.schlette@gmail.com>",
-  "license": "None",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
   "dependencies": {},
   "devDependencies": {
     "@types/express": "^4.11.1",
