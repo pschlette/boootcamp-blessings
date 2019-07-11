@@ -10,7 +10,7 @@ steps:
         "deploy",
         "blessings",
         "--runtime",
-        "node10",
+        "nodejs10",
         "--memory",
         "256MB",
         "--trigger-http",
