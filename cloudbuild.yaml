@@ -1,0 +1,17 @@
+steps:
+  - name: "gcr.io/cloud-builders/npm"
+    args: ["install"]
+  - name: "gcr.io/cloud-builders/npm"
+    args: ["run", "build"]
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "functions",
+        "deploy",
+        "blessings",
+        "--runtime",
+        "node10",
+        "--memory",
+        "256MB",
+        "--trigger-http",
+      ]
