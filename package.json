@@ -6,12 +6,26 @@
   "author": "Pete Schlette <pete.schlette@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "run-jest-e2e": "jest src/e2e-tests/**",
+    "start-functions-framework": "cd dist && functions-framework --target=blessings --port 8000",
+    "test:e2e": "yarn build && concurrently -n server,jest --success first --kill-others 'yarn start-functions-framework' 'wait-on http://localhost:8000 && yarn run-jest-e2e'"
   },
   "dependencies": {},
   "devDependencies": {
+    "@google-cloud/functions-framework": "1.1.1",
     "@types/express": "^4.11.1",
-    "@types/node": "^12.6.2",
-    "typescript": "3.5.3"
+    "@types/jest": "24.0.15",
+    "@types/node": "^10.14.11",
+    "axios": "0.19.0",
+    "concurrently": "4.1.1",
+    "jest": "24.8.0",
+    "ts-jest": "24.0.2",
+    "typescript": "3.5.3",
+    "wait-on": "3.3.0"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
   }
 }

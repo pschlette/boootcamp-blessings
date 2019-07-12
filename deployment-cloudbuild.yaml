@@ -1,0 +1,22 @@
+steps:
+  - name: "node:10.15.1"
+    entrypoint: "yarn"
+    args: ["install"]
+  - name: "node:10.15.1"
+    entrypoint: "yarn"
+    args: ["build"]
+  - name: "node:10.15.1"
+    entrypoint: "yarn"
+    args: ["test:e2e"]
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "functions",
+        "deploy",
+        "blessings",
+        "--runtime",
+        "nodejs10",
+        "--memory",
+        "256MB",
+        "--trigger-http",
+      ]
