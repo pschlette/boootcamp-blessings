@@ -9,7 +9,7 @@
     "build": "tsc",
     "run-jest-e2e": "jest src/e2e-tests/**",
     "start-functions-framework": "cd dist && functions-framework --target=blessings --port 8000",
-    "test:e2e": "yarn build && concurrently --kill-others 'yarn start-functions-framework' 'wait-on http://localhost:8000 && yarn run-jest-e2e'"
+    "test:e2e": "yarn build && concurrently -n server,jest --success first --kill-others 'yarn start-functions-framework' 'wait-on http://localhost:8000 && yarn run-jest-e2e'"
   },
   "dependencies": {},
   "devDependencies": {
