@@ -1,0 +1,17 @@
+steps:
+  - name: "gcr.io/cloud-builders/yarn"
+    args: ["install"]
+  - name: "gcr.io/cloud-builders/yarn"
+    args: ["build"]
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "functions",
+        "deploy",
+        "blessings",
+        "--runtime",
+        "nodejs10",
+        "--memory",
+        "256MB",
+        "--trigger-http",
+      ]
