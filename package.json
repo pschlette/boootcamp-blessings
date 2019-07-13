@@ -7,9 +7,17 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
+    "initial-test-database-setup": "firebase setup:emulators:database",
     "run-jest-e2e": "jest src/e2e-tests/**",
     "start-functions-framework": "cd dist && functions-framework --target=blessings --port 8000",
     "test:e2e": "yarn build && concurrently -n server,jest --success first --kill-others 'yarn start-functions-framework' 'wait-on http://localhost:8000 && yarn run-jest-e2e'"
+  },
+  "scriptsComments": {
+    "build": "",
+    "initial-test-database-setup": "This needs to run once when setting up the project to download the Firestore database emulator. We don't want to run it before every test run because it downloads the emulator every time, even if you already have it...",
+    "run-jest-e2e": "Run the end-to-end test suite with Jest, but doesn't do any setup (like building or starting dev servers). See `test:e2e` script",
+    "start-functions-framework": "Emulate Google Cloud Functions, running the 'blessing' request handler in index.ts from an HTTP server. It will only look for an `index.js` file in the current directory, so we have to cd into the `dist` directory before starting it. Dumb. Requires project to have been built/transpiled previously (since it expects JS, not TS).",
+    "test:e2e": "Builds the project, starts the Functions emulator, and runs the end-to-end test suite."
   },
   "dependencies": {},
   "devDependencies": {
@@ -19,6 +27,7 @@
     "@types/node": "^10.14.11",
     "axios": "0.19.0",
     "concurrently": "4.1.1",
+    "firebase-tools": "7.1.0",
     "jest": "24.8.0",
     "ts-jest": "24.0.2",
     "typescript": "3.5.3",
