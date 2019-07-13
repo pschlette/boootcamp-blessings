@@ -2,6 +2,7 @@ import process from "process";
 import path from "path";
 import dotenv from "dotenv";
 import { Request, Response } from "express";
+import { getDbClient } from "./getDbClient";
 
 const nodeEnvToEnvFilename: Record<string, string | undefined> = {
   production: "./production.env",
@@ -19,8 +20,34 @@ if (envFilename) {
   );
 }
 
-exports.blessings = (req: Request, res: Response) => {
-  console.log(process.env.NODE_ENV);
-  let message = req.query.message || req.body.message || "Hello World!";
-  res.status(200).send(message);
+exports.blessings = async (req: Request, res: Response) => {
+  console.log(`Environment is ${process.env.NODE_ENV}`);
+
+  console.log(JSON.stringify(req.query, null, 2));
+
+  if (!req.query.test) {
+    res.status(200).send();
+    return;
+  }
+
+  const dbClient = getDbClient();
+
+  const transaction = dbClient.transaction();
+  const userKey = dbClient.key(["User", "@capn_hoops"]);
+  console.log(`User key path: ${userKey.path}`);
+
+  await transaction.run();
+  const [data] = (await transaction.get(userKey)) as Array<null | {
+    count: number;
+  }>;
+  res.status(200).send(`The bless count is ${data ? data.count : 0}`);
+  transaction.save({
+    key: userKey,
+    data: {
+      count: (data ? data.count : 0) + 1
+    }
+  });
+  await transaction.commit();
+
+  // let message = req.query.message || req.body.message || "Hello World!";
 };
