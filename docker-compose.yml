@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  datastore-emulator:
+    image: singularities/datastore-emulator
+    # volumes:
+    #   - firestore-data:/opt/data
+    env_file:
+      - ./docker-datastore-emulator.env
+    ports:
+      - "8080:8080"
+  # app:
+  #   image: your-app-image
+  #   environment:
+  #     - FIRESTORE_EMULATOR_HOST=firestore
+  #     - FIRESTORE_PROJECT_ID=project-test
