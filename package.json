@@ -8,13 +8,17 @@
   "scripts": {
     "build": "tsc",
     "run-jest-e2e": "jest src/e2e-tests/**",
+    "start-dev-server": "NODE_ENV=development yarn start-functions-framework",
     "start-functions-framework": "cd dist && functions-framework --target=blessings --port 8000",
-    "test:e2e": "yarn build && concurrently -n server,jest --success first --kill-others 'NODE_ENV=test yarn start-functions-framework' 'wait-on http://localhost:8000 && yarn run-jest-e2e'"
+    "start-test-server": "NODE_ENV=test yarn start-functions-framework",
+    "test:e2e": "yarn build && concurrently -n server,jest --success first --kill-others 'yarn start-test-server' 'wait-on http://localhost:8000 && yarn run-jest-e2e'"
   },
   "scriptsComments": {
     "build": "",
     "run-jest-e2e": "Run the end-to-end test suite with Jest, but doesn't do any setup (like building or starting dev servers). See `test:e2e` script",
+    "start-dev-server": "Start the server (via Google's Functions Framework) in the development environment",
     "start-functions-framework": "Emulate Google Cloud Functions, running the 'blessing' request handler in index.ts from an HTTP server. It will only look for an `index.js` file in the current directory, so we have to cd into the `dist` directory before starting it. Dumb. Requires project to have been built/transpiled previously (since it expects JS, not TS).",
+    "start-test-server": "Start the server (via Google's Functions Framework) in the test environment",
     "test:e2e": "Builds the project, starts the Functions emulator, and runs the end-to-end test suite."
   },
   "dependencies": {
