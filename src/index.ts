@@ -2,7 +2,7 @@ import process from "process";
 import path from "path";
 import dotenv from "dotenv";
 import { Request, Response } from "express";
-import { getDbClient } from "./getDbClient";
+import { getDbClient } from "./dbClient";
 
 const nodeEnvToEnvFilename: Record<string, string | undefined> = {
   production: "./production.env",
