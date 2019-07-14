@@ -9,6 +9,9 @@ services:
       - ./docker-datastore-emulator.env
     ports:
       - "8080:8080"
+    # Disable writing data to disk - this emulator is only for tests/dev,
+    # writing to disk will just slow us down
+    command: "--no-store-on-disk"
   # app:
   #   image: your-app-image
   #   environment:
