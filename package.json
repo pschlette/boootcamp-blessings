@@ -39,6 +39,7 @@
     "wait-on": "3.3.0"
   },
   "jest": {
+    "globalSetup": "./src/jest-global-setup.ts",
     "preset": "ts-jest",
     "testEnvironment": "node"
   }
