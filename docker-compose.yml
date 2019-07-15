@@ -12,8 +12,8 @@ services:
     # Disable writing data to disk - this emulator is only for tests/dev,
     # writing to disk will just slow us down
     command: "--no-store-on-disk"
-  # app:
-  #   image: your-app-image
-  #   environment:
-  #     - FIRESTORE_EMULATOR_HOST=firestore
-  #     - FIRESTORE_PROJECT_ID=project-test
+  app:
+    image: node:10.15.1
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
