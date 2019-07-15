@@ -13,7 +13,7 @@
     "start-test-server": "NODE_ENV=test yarn start-functions-framework",
     "test:e2e": "yarn build && yarn wait-for-datastore-emulator && concurrently -n server,jest --success first --kill-others 'yarn start-test-server' 'wait-on http://localhost:8000 && yarn run-jest-e2e'",
     "test:integration": "yarn wait-for-datastore-emulator && jest --testPathPattern='.*\\.itest\\.ts'",
-    "wait-for-datastore-emulator": "echo 'Checking that Datastore emulator is ready...' && wait-on --interval 1000 --window 1000 --timeout 30000 http-get://localhost:8080/"
+    "wait-for-datastore-emulator": "echo 'Checking that Datastore emulator is ready...' && wait-on -l --interval 1000 --window 1000 --timeout 120000 http-get://localhost:8080/"
   },
   "scriptsComments": {
     "build": "Run tsc to transpile source, result in `dist` directory. Copy env files there too (functions emulator and prod will need them).",
