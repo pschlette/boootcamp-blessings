@@ -13,7 +13,7 @@ steps:
     # we can go to the next step (which will wait for the server to become
     # available). Without this flag the command wouldn't exit until it was
     # manually killed...which will never happen in CI, obvi
-    args: ["up", "-d", "datastore-emulator"]
+    args: ["up", "datastore-emulator"]
     waitFor: ["build"]
 
     # TODO The `test:e2e` script runs `yarn build` which we've already run in a
