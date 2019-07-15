@@ -7,7 +7,7 @@ steps:
     entrypoint: "yarn"
     args: ["build"]
 
-  - name: "docker/compose"
+  - name: "docker/compose:1.24.1"
     # Add '-d' flag so Docker exits as soon as the container's been created and
     # we can go to the next step (which will wait for the server to become
     # available). Without this flag the command wouldn't exit until it was
@@ -25,5 +25,5 @@ steps:
     args: ["test:integration"]
 
     # Stop/destroy the datastore emulator that was started a few steps earlier
-  - name: "docker/compose"
+  - name: "docker/compose:1.24.1"
     args: ["down"]
