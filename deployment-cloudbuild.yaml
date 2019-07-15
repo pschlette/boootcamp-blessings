@@ -1,13 +1,43 @@
+# TODO this does exactly the same thing as `cloudbuild.yaml` but with a step at
+# the end to deploy the code to Google Cloud Functions. Can we implement some
+# conditional logic to make one config?
 steps:
   - name: "node:10.15.1"
     entrypoint: "yarn"
     args: ["install"]
+
   - name: "node:10.15.1"
     entrypoint: "yarn"
     args: ["build"]
+
+  - name: "gcr.io/cloud-builders/docker"
+    entrypoint: "docker-compose"
+    # Add '-d' flag so Docker exits as soon as the container's been created and
+    # we can go to the next step (which will wait for the server to become
+    # available). Without this flag the command wouldn't exit until it was
+    # manually killed...which will never happen in CI, obvi
+    args: ["up", "-d", "datastore-emulator"]
+
+    # TODO The `test:e2e` script runs `yarn build` which we've already run in a
+    # previous step. That's a little wasteful?
   - name: "node:10.15.1"
     entrypoint: "yarn"
     args: ["test:e2e"]
+
+  - name: "node:10.15.1"
+    entrypoint: "yarn"
+    args: ["test:integration"]
+
+    # Stop/destroy the datastore emulator that was started a few steps earlier
+  - name: "gcr.io/cloud-builders/docker"
+    entrypoint: "docker-compose"
+    args: ["down"]
+
+    # Deploy built code to our cloud function.
+    # The `main` property of the package.json determines which file has the
+    # entrypoint (in this case, dist/index.js). "blessings" is the name of the
+    # exported function from that file that should be called when a request
+    # comes in.
   - name: "gcr.io/cloud-builders/gcloud"
     args:
       [
