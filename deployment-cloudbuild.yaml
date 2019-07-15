@@ -10,7 +10,7 @@ steps:
     entrypoint: "yarn"
     args: ["build"]
 
-  - name: "gcr.io/cloud-builders/docker"
+  - name: "docker/compose"
     entrypoint: "docker-compose"
     # Add '-d' flag so Docker exits as soon as the container's been created and
     # we can go to the next step (which will wait for the server to become
