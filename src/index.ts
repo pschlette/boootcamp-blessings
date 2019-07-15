@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { Request, Response } from "express";
 import { getDbClient } from "./dbClient";
 
+// TODO make this env handling garbage better
 const nodeEnvToEnvFilename: Record<string, string | undefined> = {
   production: "./production.env",
   development: "./development.env",
@@ -30,7 +31,7 @@ exports.blessings = async (req: Request, res: Response) => {
     return;
   }
 
-  // TODO Parse Slack's slash command request
+  // TODO Parse Slack's slash command request and call `handleCommand`
 
   // Test interacting with Datastore
   const dbClient = getDbClient();

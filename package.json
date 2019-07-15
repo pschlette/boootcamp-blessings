@@ -11,7 +11,8 @@
     "start-dev-server": "NODE_ENV=development yarn start-functions-framework",
     "start-functions-framework": "cd dist && functions-framework --target=blessings --port 8000",
     "start-test-server": "NODE_ENV=test yarn start-functions-framework",
-    "test:e2e": "yarn build && concurrently -n server,jest --success first --kill-others 'yarn start-test-server' 'wait-on http://localhost:8000 && yarn run-jest-e2e'"
+    "test:e2e": "yarn build && concurrently -n server,jest --success first --kill-others 'yarn start-test-server' 'wait-on http://localhost:8000 && yarn run-jest-e2e'",
+    "test:integration": "jest --testPathPattern='.*\\.itest\\.ts'"
   },
   "scriptsComments": {
     "build": "Run tsc to transpile source, result in `dist` directory. Copy env files there too (functions emulator and prod will need them).",
@@ -19,7 +20,8 @@
     "start-dev-server": "Start the server (via Google's Functions Framework) in the development environment",
     "start-functions-framework": "Emulate Google Cloud Functions, running the 'blessing' request handler in index.ts from an HTTP server. It will only look for an `index.js` file in the current directory, so we have to cd into the `dist` directory before starting it. Dumb. Requires project to have been built/transpiled previously (since it expects JS, not TS).",
     "start-test-server": "Start the server (via Google's Functions Framework) in the test environment",
-    "test:e2e": "Builds the project, starts the Functions emulator, and runs the end-to-end test suite."
+    "test:e2e": "Builds the project, starts the Functions emulator, and runs the end-to-end test suite. Needs the (dockerized) Datastore emulator to be running.",
+    "test:integration": "Runs integration tests (whose names end in *.itest.ts). Needs the (dockerized) Datastore emulator to be running."
   },
   "dependencies": {
     "@google-cloud/datastore": "4.1.3",
