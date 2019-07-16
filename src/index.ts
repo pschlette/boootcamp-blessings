@@ -2,7 +2,6 @@ import process from "process";
 import path from "path";
 import dotenv from "dotenv";
 import { Request, Response } from "express";
-import { getDbClient } from "./dbClient";
 
 // TODO make this env handling garbage better
 const nodeEnvToEnvFilename: Record<string, string | undefined> = {
