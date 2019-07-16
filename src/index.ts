@@ -25,31 +25,29 @@ exports.blessings = async (req: Request, res: Response) => {
   console.log(`Environment is ${process.env.NODE_ENV}`);
 
   // For some reason the google cloud functions emulator sends some empty
-  // requests to the server when it starts up. Respond with a blank 200
-  if (!req.headers["accept"]) {
+  // requests to the server when it starts up. They don't have a user-agent
+  // header. Respond with a blank 200.
+  if (!req.headers["user-agent"]) {
     res.status(200).send();
     return;
   }
 
   // TODO Parse Slack's slash command request and call `handleCommand`
 
-  // Test interacting with Datastore
+  // Until then...test interacting with Datastore
   const dbClient = getDbClient();
 
   const userKey = dbClient.key(["TestUser", "@capn_hoops"]);
 
   // Read and update a test count within a transaction
-  const transaction = dbClient.transaction();
-  await transaction.run();
-  const [data] = (await transaction.get(userKey)) as Array<null | {
+  const [data] = (await dbClient.get(userKey)) as Array<null | {
     count: number;
   }>;
   res.status(200).send(`The bless count is ${data ? data.count : 0}`);
-  transaction.save({
+  dbClient.save({
     key: userKey,
     data: {
       count: (data ? data.count : 0) + 1
     }
   });
-  await transaction.commit();
 };

@@ -65,11 +65,38 @@ integration tests by adding a `--watch` flag to the end of the command...I think
 Yell at Pete if you have trouble with any of these steps:
 
 1. Clone this repo and check out the `dev` branch (which should be the default).
-2. `yarn install` or `npm install` the dependencies.
-3. Run `yarn build`.
-4. Run `yarn start-dev-server`. You should see some happy chatter about a server starting. You can send a test request to `localhost:8000` if you want, although the response won't be very interesting.
-5. Open a new shell and start the test database with `docker-compose up`. Keep it running.
-6. With the database from step 5 running, run `yarn test:e2e`. You should see a green checkmark in the output when it's done.
-7. With the database from step 5 still running, run `yarn test:integration`. You should see TWO green checkmarks in the output when it's done.
+2. Start the database emulator and a utility container for doing Node stuff
+   by running `docker-compose up -d`. If you're feeling paranoid you can check
+   that they're running afterward with `docker-compose ps`.
+3. Install dependencies: `docker-compose exec app yarn install`.
+4. Build the project: Run `docker-compose exec app yarn build`.
+5. Start the dev server: run `docker-compose exec app yarn start-dev-server`. You should see some
+   happy chatter about a server starting. You can send a test request to
+   `localhost:8000` if you want, although the response won't be very
+   interesting. This script assumes the project has already been built and
+   doesn't restart when the code changes. (Don't like that? Change it!) You
+   don't really _need_ the dev server for anything right now so you can kill
+   it once you feel sure that it worked.
+6. Run `docker-compose exec app yarn test:e2e` to run the end to end tests,
+   which send real(ish) HTTP requests to a test server and check the output. You
+   should see a green checkmark in the output when it's done.
+7. Run `docker-compose exec app yarn test:integration`. You should see TWO
+   green checkmarks in the output when it's done. These tests run against the
+   local test database but they're simpler than the end to end tests because you
+   can just call your functions in there instead of sending a whole HTTP request
+   and checking the response.
 8. Start a branch, write some code and tests and add amazing new features.
-9. Open a PR!
+   For the moment I recommend developing by starting the integration test runner
+   in watch mode (`docker-compose exec app yarn test:integration --watch`) and
+   testing your code as you go.
+9. Open a PR! We will be merging stuff into the `dev` branch as we go and
+   merging `dev` into `master` when we want to deploy. The end-to-end and
+   integration tests will run in CI and you'll get big green checkmark on
+   your PR if they all pass.
+10. Stop the emulator and the app container when you're done with
+    `docker-compose down`.
+
+If your little fingers get tired of typing `docker-compose exec` all the time
+you can [set up a Bash alias like
+`dcx="docker-compose exec`](https://www.digitalocean.com/community/tutorials/an-introduction-to-useful-bash-aliases-and-functions)
+to give them a break.
