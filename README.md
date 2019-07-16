@@ -67,7 +67,8 @@ Yell at Pete if you have trouble with any of these steps:
 1. Clone this repo and check out the `dev` branch (which should be the default).
 2. Start the database emulator and a utility container for doing Node stuff
    by running `docker-compose up -d`. If you're feeling paranoid you can check
-   that they're running afterward with `docker-compose ps`.
+   that they're running afterward with `docker-compose ps`. Another option is to install
+   [Lazy Docker](https://github.com/jesseduffield/lazydocker)
 3. Install dependencies: `docker-compose exec app yarn install`.
 4. Build the project: Run `docker-compose exec app yarn build`.
 5. Start the dev server: run `docker-compose exec app yarn start-dev-server`. You should see some
