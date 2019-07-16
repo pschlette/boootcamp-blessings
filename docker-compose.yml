@@ -1,10 +1,12 @@
 version: "3"
 
 services:
+  # Runs a baby version of Google's Datastore nosql db that our real deployed
+  # function would send queries to in the real cloud. We set an environment
+  # variable when running our dev and test servers that tells the db client to
+  # send queries to this test instance instead of The Cloud.
   datastore-emulator:
     image: singularities/datastore-emulator
-    # volumes:
-    #   - firestore-data:/opt/data
     env_file:
       - ./docker-datastore-emulator.env
     ports:
@@ -12,8 +14,16 @@ services:
     # Disable writing data to disk - this emulator is only for tests/dev,
     # writing to disk will just slow us down
     command: "--no-store-on-disk"
+  # A handy container with node 10 that can install deps, compile our TS code
+  # to JS, run the server and/or tests, etc.
+  # In production, Google Cloud Functions will use Cloud Power :tm: to run our
+  # function in index.js. This container won't be running. None of these
+  # containers will be running.
   app:
     image: node:10.15.1
     working_dir: /usr/src/app
+    # A stupid hack to run the container without it stopping immediately
+    # See https://serverfault.com/a/910624/267912
+    command: "tail -f /dev/null"
     volumes:
       - .:/usr/src/app
