@@ -1,10 +1,21 @@
 steps:
-  - name: "node:10.15.1"
-    entrypoint: "yarn"
-    args: ["install"]
-  - name: "node:10.15.1"
-    entrypoint: "yarn"
-    args: ["build"]
-  - name: "node:10.15.1"
-    entrypoint: "yarn"
-    args: ["test:e2e"]
+  - name: "docker/compose:1.24.1"
+    args: ["run", "--rm", "app", "yarn", "install"]
+
+  - name: "docker/compose:1.24.1"
+    args: ["run", "--rm", "app", "yarn", "build"]
+
+  - name: "docker/compose:1.24.1"
+    # Do some stupid shell voodoo so we can run two docker-compose commands in
+    # one step (because we need to start the containers and then run the tests)
+    entrypoint: "/bin/sh"
+    args: ["-c", "docker-compose up -d && docker-compose run app yarn test:e2e"]
+
+  - name: "docker/compose:1.24.1"
+    # Same story here as for the end-to-end tests re: shell voodoo
+    entrypoint: "/bin/sh"
+    args:
+      [
+        "-c",
+        "docker-compose up -d && docker-compose run app yarn test:integration",
+      ]

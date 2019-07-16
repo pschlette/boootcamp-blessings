@@ -1,13 +1,33 @@
+# TODO this does exactly the same thing as `cloudbuild.yaml` but with a step at
+# the end to deploy the code to Google Cloud Functions. Can we implement some
+# conditional logic to make one config?
 steps:
-  - name: "node:10.15.1"
-    entrypoint: "yarn"
-    args: ["install"]
-  - name: "node:10.15.1"
-    entrypoint: "yarn"
-    args: ["build"]
-  - name: "node:10.15.1"
-    entrypoint: "yarn"
-    args: ["test:e2e"]
+  - name: "docker/compose:1.24.1"
+    args: ["run", "--rm", "app", "yarn", "install"]
+
+  - name: "docker/compose:1.24.1"
+    args: ["run", "--rm", "app", "yarn", "build"]
+
+  - name: "docker/compose:1.24.1"
+    # Do some stupid shell voodoo so we can run two docker-compose commands in
+    # one step (because we need to start the containers and then run the tests)
+    entrypoint: "/bin/sh"
+    args: ["-c", "docker-compose up -d && docker-compose run app yarn test:e2e"]
+
+  - name: "docker/compose:1.24.1"
+    # Same story here as for the end-to-end tests re: shell voodoo
+    entrypoint: "/bin/sh"
+    args:
+      [
+        "-c",
+        "docker-compose up -d && docker-compose run app yarn test:integration",
+      ]
+
+    # Deploy built code to our cloud function.
+    # The `main` property of the package.json determines which file has the
+    # entrypoint (in this case, dist/index.js). "blessings" is the name of the
+    # exported function from that file that should be called when a request
+    # comes in.
   - name: "gcr.io/cloud-builders/gcloud"
     args:
       [
