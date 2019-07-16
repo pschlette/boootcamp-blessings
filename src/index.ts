@@ -34,20 +34,21 @@ exports.blessings = async (req: Request, res: Response) => {
 
   // TODO Parse Slack's slash command request and call `handleCommand`
 
-  // Until then...test interacting with Datastore
-  const dbClient = getDbClient();
+  res.status(200).send(`The bless count is ${req.query["count"]}`);
 
-  const userKey = dbClient.key(["TestUser", "@capn_hoops"]);
+  // Some goofing around with Datastore
+  // const dbClient = getDbClient();
 
-  // Read and update a test count within a transaction
-  const [data] = (await dbClient.get(userKey)) as Array<null | {
-    count: number;
-  }>;
-  res.status(200).send(`The bless count is ${data ? data.count : 0}`);
-  dbClient.save({
-    key: userKey,
-    data: {
-      count: (data ? data.count : 0) + 1
-    }
-  });
+  // const userKey = dbClient.key(["TestUser", "@capn_hoops"]);
+
+  // // Read and update a test count within a transaction
+  // const [data] = (await dbClient.get(userKey)) as Array<null | {
+  //   count: number;
+  // }>;
+  // dbClient.save({
+  //   key: userKey,
+  //   data: {
+  //     count: (data ? data.count : 0) + 1
+  //   }
+  // });
 };
