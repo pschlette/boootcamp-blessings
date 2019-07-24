@@ -2,6 +2,7 @@ import process from "process";
 import path from "path";
 import dotenv from "dotenv";
 import { Request, Response } from "express";
+import { getDbClient } from "./dbClient";
 
 // TODO make this env handling garbage better
 const nodeEnvToEnvFilename: Record<string, string | undefined> = {
@@ -33,21 +34,34 @@ exports.blessings = async (req: Request, res: Response) => {
 
   // TODO Parse Slack's slash command request and call `handleCommand`
 
-  res.status(200).send(`The bless count is ${req.query["count"]}`);
-
   // Some goofing around with Datastore
-  // const dbClient = getDbClient();
+  try {
+    const dbClient = getDbClient();
 
-  // const userKey = dbClient.key(["TestUser", "@capn_hoops"]);
+    const userKey = dbClient.key(["TestUser", "@capn_hoops"]);
 
-  // // Read and update a test count within a transaction
-  // const [data] = (await dbClient.get(userKey)) as Array<null | {
-  //   count: number;
-  // }>;
-  // dbClient.save({
-  //   key: userKey,
-  //   data: {
-  //     count: (data ? data.count : 0) + 1
-  //   }
-  // });
+    // Read and update a test count within a transaction
+    const [data] = (await dbClient.get(userKey)) as Array<null | {
+      count: number | null;
+    }>;
+
+    const newCount = parseInt(req.query["count"], 10);
+
+    await dbClient.save({
+      key: userKey,
+      data: {
+        count: isNaN(newCount) ? null : newCount
+      }
+    });
+
+    res
+      .status(200)
+      .send(
+        `The latest bless count is ${
+          data && data.count ? data.count : "missing"
+        }`
+      );
+  } catch (e) {
+    res.status(200).send(`Couldn't connect to db: ${e}`);
+  }
 };

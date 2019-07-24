@@ -10,11 +10,14 @@ describe("End-to-end smoke test", () => {
   });
 
   it("can request data from test server with test db", async () => {
-    expect.assertions(2);
-    const result = await testAxios.get("/?count=0");
-    expect(result.data).toBe("The bless count is 0");
+    expect.assertions(3);
+    const result = await testAxios.get("/?count=23");
+    expect(result.data).toBe("The latest bless count is missing");
 
-    const result2 = await testAxios.get("/?count=1");
-    expect(result2.data).toBe("The bless count is 1");
+    const result2 = await testAxios.get("/");
+    expect(result2.data).toBe("The latest bless count is 23");
+
+    const result3 = await testAxios.get("/?count=5");
+    expect(result3.data).toBe("The latest bless count is missing");
   });
 });
